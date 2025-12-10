@@ -38,4 +38,8 @@ The quiz module includes memorization flashcards and reading/writing quizzes:
   - Each key on the keyboard inserts a Baybayin symbol encoded with your symbol system (e.g., N+, +, E, O).
   - Input is validated against stored encoded answers; correct submissions increment the score.
   - A SnackBar provides immediate feedback, and incorrect attempts are stored for retry.
-
+# E. Originality and Acknowledgements
+All code, UI layout, and app assets used in this project were developed by Paul Aldrich Pimentel originally for this ICS26011 final project without using templates or pre-made applications. I acknowledge the following source materials freely provided by the NGO, Baybayin Buhayin:
+- John NL Leyson — Co-Founder of Baybayin Buhayin; creator of the custom Baybayin font used in the app.
+- Jose Jaime Enage — Founding Chairman of Baybayin Buhayin; creator of the “Baybayin Workshop” PowerPoint presentation, which provided background information and lecture material that helped shape the educational content of the app.
+All third-party materials are used strictly for educational purposes. This application, BaybayinGo!, promotes awareness of Baybayin as part of Filipino cultural heritage and teaches the script in alignment with Christian values of knowledge and stewardship.
