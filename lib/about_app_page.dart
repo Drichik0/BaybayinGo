@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'about_app_description_page.dart';
 import 'about_app_project_info_page.dart';
 import 'about_app_tools_page.dart';
-import 'about_app_originality_page.dart';
 import 'about_app_acknowledgements_page.dart';
 import 'about_app_developer_page.dart';
 
 class AboutAppPage extends StatelessWidget {
   const AboutAppPage({super.key});
+
+  Future<void> _launchFeedbackURL() async {
+    final Uri url = Uri.parse(
+        'https://docs.google.com/forms/d/e/1FAIpQLSenujK5w_Pg8CiRcMRoaT1C99mYTSQ0cM0_62x2UhMVQzbX7Q/viewform?usp=publish-editor');
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      debugPrint('Could not launch $url');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +56,7 @@ class AboutAppPage extends StatelessWidget {
               );
             }),
             const SizedBox(height: 16),
-            _buildAboutButton(context, 'Project Information', () {
+            _buildAboutButton(context, 'Project Info & Originality', () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -61,14 +69,6 @@ class AboutAppPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) => const AboutAppToolsPage()),
-              );
-            }),
-            const SizedBox(height: 16),
-            _buildAboutButton(context, 'Originality Statement', () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AboutAppOriginalityPage()),
               );
             }),
             const SizedBox(height: 16),
@@ -87,7 +87,27 @@ class AboutAppPage extends StatelessWidget {
                     builder: (context) => const AboutAppDeveloperPage()),
               );
             }),
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
+            const Divider(color: Color(0xFFF7C85C), thickness: 1.5),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: _launchFeedbackURL,
+                icon: const Icon(Icons.feedback_rounded, color: Colors.white),
+                label: const Text("Submit Feedback",
+                    style: TextStyle(fontSize: 18, color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF7FB77E),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  elevation: 2,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -97,7 +117,7 @@ class AboutAppPage extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: const Text("Back",
                     style: TextStyle(fontSize: 18, color: Colors.white)),
