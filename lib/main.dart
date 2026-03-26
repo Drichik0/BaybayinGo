@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'what_is_baybayin_page.dart';
 import 'learn_baybayin_page.dart';
 import 'baybayin_quiz_page.dart';
+import 'about_app_page.dart';
 
 void main() {
   runApp(const BaybayinApp());
@@ -16,7 +17,7 @@ class BaybayinApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Baybayin Go!',
       theme: ThemeData(
-        primaryColor: const Color(0xFF8CC63F),
+        primaryColor: const Color(0xFF2F6B3F),
         scaffoldBackgroundColor: Colors.white,
       ),
       home: const HomePage(),
@@ -32,6 +33,17 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: Container(
         width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFFFF6C0),
+              Colors.white,
+            ],
+            stops: [0.0, 0.4],
+          ),
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -45,8 +57,8 @@ class HomePage extends StatelessWidget {
             const Text(
               'BaybayinGo!',
               style: TextStyle(
-                fontSize: 36,
-                color: Color(0xFF8CC63F),
+                fontSize: 32,
+                color: Color(0xFF2F6B3F),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -54,8 +66,8 @@ class HomePage extends StatelessWidget {
             RichText(
               text: const TextSpan(
                 style: TextStyle(
-                  fontSize: 48,
-                  color: Color(0xFF8CC63F),
+                  fontSize: 44,
+                  color: Color(0xFF2F6B3F),
                 ),
                 children: [
                   TextSpan(
@@ -90,7 +102,6 @@ class HomePage extends StatelessWidget {
                 }),
                 const SizedBox(height: 20),
 
-                // NEW — BAYBAYIN QUIZ BUTTON
                 _buildButton(context, 'Baybayin Quiz', () {
                   Navigator.push(
                     context,
@@ -98,11 +109,21 @@ class HomePage extends StatelessWidget {
                         builder: (context) => const BaybayinQuizPage()),
                   );
                 }),
+                const SizedBox(height: 20),
+
+                _buildButton(context, 'About App', () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AboutAppPage()),
+                  );
+                }),
               ],
             ),
           ],
         ),
       ),
+
     );
   }
 
@@ -113,7 +134,7 @@ class HomePage extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF8CC63F),
+          backgroundColor: const Color(0xFF2F6B3F),
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(

@@ -114,60 +114,72 @@ class _QuizWritingPageState extends State<QuizWritingPage> {
   @override
   Widget build(BuildContext context) {
     final question = _quizQuestions[_currentQuestionIndex]['question']!;
-    const double buttonWidth = 35;
-    const double buttonHeight = 40;
-    const double fontSize = 18;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Writing Quiz'),
-        backgroundColor: const Color(0xFF8CC63F),
+        title: const Text('Writing Quiz',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF2F6B3F),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(12),
         child: Column(
           children: [
             Text(
               'Question ${_currentQuestionIndex + 1} of ${_quizQuestions.length}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF2F6B3F)),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 6),
             const Text(
               'Translate this word into Baybayin:',
-              style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+              style: TextStyle(fontSize: 13, fontStyle: FontStyle.italic),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 4),
             Text(
               question,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+              style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF2F6B3F)),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 10),
             TextField(
               readOnly: true,
               style: const TextStyle(
                 fontFamily: 'Baybayin',
-                fontSize: 28,
+                fontSize: 24,
                 color: Colors.black,
               ),
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 hintText: 'Ity+p+ aN+ IyoN+ sgot+',
+                hintStyle: TextStyle(
+                  fontFamily: 'Baybayin',
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
               ),
               controller: TextEditingController(text: _userAnswer),
             ),
-            const SizedBox(height: 15),
-            Expanded(
-                child: _buildKeyboard(buttonWidth, buttonHeight, fontSize)),
             const SizedBox(height: 10),
-            Align(
-              alignment: Alignment.centerRight,
+            _buildKeyboard(),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
               child: ElevatedButton(
                 onPressed: _checkAnswer,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8CC63F),
+                  backgroundColor: const Color(0xFF2F6B3F),
                   foregroundColor: Colors.white,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 12, horizontal: 30),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
                 child: const Text('Submit', style: TextStyle(fontSize: 16)),
               ),
@@ -178,58 +190,90 @@ class _QuizWritingPageState extends State<QuizWritingPage> {
     );
   }
 
-  Widget _buildKeyboard(
-      double buttonWidth, double buttonHeight, double fontSize) {
+  Widget _buildKeyboard() {
     final List<List<String>> keys = [
       ['b', 'k', 'd', 'g', 'h'],
       ['l', 'm', 'n', 'N', 'p'],
       ['s', 't', 'w', 'y', 'a'],
       ['E', 'O', '+', ',', '.'],
-      ['e', 'o', ' '] // last row with space button
+      ['e', 'o', ' ']
     ];
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        ...keys.map((row) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: row.map((key) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2),
-                  child: ElevatedButton(
-                    onPressed: () => _insertCharacter(key),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[300],
-                      foregroundColor: Colors.black,
-                      minimumSize: Size(buttonWidth, buttonHeight),
-                    ),
-                    child: Text(
-                      key == ' ' ? 'Is+pey+s+' : key,
-                      style: TextStyle(
-                        fontFamily: 'Baybayin',
-                        fontSize: key == ' ' ? fontSize * 0.7 : fontSize,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate button size based on available width
+        // 5 buttons per row with spacing
+        final maxButtonsPerRow = 5;
+        final totalHorizontalPadding = (maxButtonsPerRow - 1) * 6.0; // 3px padding each side
+        final availableWidth = constraints.maxWidth - totalHorizontalPadding;
+        final buttonWidth = (availableWidth / maxButtonsPerRow).clamp(30.0, 60.0);
+        final buttonHeight = 42.0;
+        final fontSize = buttonWidth * 0.45;
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ...keys.map((row) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: row.map((key) {
+                    final isSpace = key == ' ';
+                    // Space button takes up width of 3 normal buttons
+                    final keyWidth = isSpace ? buttonWidth * 2 + 6 : buttonWidth;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: SizedBox(
+                        width: keyWidth,
+                        height: buttonHeight,
+                        child: ElevatedButton(
+                          onPressed: () => _insertCharacter(key),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFFF6C0),
+                            foregroundColor: const Color(0xFF2F6B3F),
+                            padding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(
+                                color: const Color(0xFF7FB77E).withOpacity(0.5),
+                                width: 1,
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            isSpace ? 'Is+pey+s+' : key,
+                            style: TextStyle(
+                              fontFamily: 'Baybayin',
+                              fontSize: isSpace ? fontSize * 0.6 : fontSize,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                    );
+                  }).toList(),
+                ),
+              );
+            }),
+            const SizedBox(height: 5),
+            SizedBox(
+              width: buttonWidth * 2 + 6,
+              height: buttonHeight,
+              child: ElevatedButton(
+                onPressed: _deleteCharacter,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red[400],
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                );
-              }).toList(),
+                ),
+                child: const Icon(Icons.backspace, size: 20),
+              ),
             ),
-          );
-        }).toList(),
-        const SizedBox(height: 5),
-        ElevatedButton(
-          onPressed: _deleteCharacter,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.red[300],
-            foregroundColor: Colors.white,
-            minimumSize: Size(buttonWidth + 10, buttonHeight),
-          ),
-          child: const Icon(Icons.backspace, size: 20),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

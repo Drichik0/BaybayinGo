@@ -193,8 +193,13 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
   int _current = 0;
   int _score = 0;
   bool _quizStarted = false;
-  bool _allowScoring = true;
+  bool _isRetryMode = false;
+  int _originalScore = 0;
+  int _originalTotal = 0;
   List<int> _incorrectIndexes = [];
+
+  // Pre-shuffled choices per question to avoid reshuffling on rebuild
+  Map<int, List<String>> _shuffledChoicesCache = {};
 
   @override
   void initState() {
@@ -202,7 +207,7 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
     _prepareNewQuiz();
   }
 
-  void _prepareNewQuiz({bool fromIncorrectOnly = false}) {
+  void _prepareNewQuiz() {
     final random = Random();
 
     final availableWordIndices = List<int>.generate(_wordBank.length, (i) => i);
@@ -229,11 +234,31 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
 
     _current = 0;
     _score = 0;
-    _quizStarted = true;
-    _allowScoring = true;
+    _isRetryMode = false;
+    _originalScore = 0;
+    _originalTotal = 0;
     _incorrectIndexes = [];
+    _shuffledChoicesCache = {};
+    _cacheShuffledChoices();
 
-    setState(() {});
+    setState(() {
+      _quizStarted = true;
+    });
+  }
+
+  void _cacheShuffledChoices() {
+    final random = Random();
+    _shuffledChoicesCache = {};
+    for (int i = 0; i < _questions.length; i++) {
+      final q = _questions[i];
+      final shuffled = List<String>.from(q.choices);
+      if (!shuffled
+          .any((c) => c.trim().toLowerCase() == q.correct.trim().toLowerCase())) {
+        shuffled.add(q.correct);
+      }
+      shuffled.shuffle(random);
+      _shuffledChoicesCache[i] = shuffled;
+    }
   }
 
   void _onSelectAnswer(String selected) {
@@ -242,7 +267,7 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
     final isCorrect =
         selected.trim().toLowerCase() == q.correct.trim().toLowerCase();
 
-    if (isCorrect && _allowScoring) _score++;
+    if (isCorrect) _score++;
 
     if (!isCorrect) _incorrectIndexes.add(_current);
 
@@ -271,24 +296,37 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
   }
 
   void _showResultDialog() {
+    // Calculate display score
+    int displayScore;
+    int displayTotal;
+
+    if (_isRetryMode) {
+      // In retry mode: original correct + newly correct from retry
+      displayScore = _originalScore + _score;
+      displayTotal = _originalTotal;
+    } else {
+      displayScore = _score;
+      displayTotal = _questions.length;
+    }
+
+    final isPerfect = _incorrectIndexes.isEmpty;
+
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('Quiz Complete'),
-        content: Text('Your score: $_score / ${_questions.length}'),
+        title: Text(isPerfect ? 'Perfect Score! 🎉' : 'Quiz Complete'),
+        content: Text('Your score: $displayScore / $displayTotal'),
         actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              if (_incorrectIndexes.isNotEmpty) {
-                _startRetryIncorrect();
-              } else {
-                _prepareNewQuiz();
-              }
-            },
-            child: const Text('Retry incorrect'),
-          ),
+          // Only show "Retry incorrect" if there are incorrect answers
+          if (!isPerfect)
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _startRetryIncorrect(displayScore, displayTotal);
+              },
+              child: const Text('Retry incorrect'),
+            ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -308,15 +346,35 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
     );
   }
 
-  void _startRetryIncorrect() {
+  void _startRetryIncorrect(int currentTotalScore, int totalQuestions) {
     final incorrectQuestions =
         _incorrectIndexes.map((i) => _questions[i]).toList();
     setState(() {
+      // Save the score from correct answers so far
+      _originalScore = currentTotalScore - _incorrectIndexes.length +
+          (_isRetryMode ? 0 : 0); // already excluded incorrect
+      // Actually: the score at this point already only counts correct ones
+      _originalScore = _score + (_isRetryMode ? _originalScore : 0) -
+          _incorrectIndexes.length; // wrong
+    });
+
+    // Simpler logic: displayScore at end was (originalScore + retryScore)
+    // originalScore = correct answers NOT in the retry set
+    // retryScore = correct answers in the retry round
+    int correctFromThisRound = _score; // includes both retry correct and original correct
+    int incorrectCount = _incorrectIndexes.length;
+    int correctNotRetried = correctFromThisRound; // score only counts correct answers
+
+    setState(() {
+      _originalScore = correctNotRetried;
+      _originalTotal = totalQuestions;
       _questions = List<_Question>.from(incorrectQuestions);
       _current = 0;
-      _allowScoring = false;
       _score = 0;
+      _isRetryMode = true;
       _incorrectIndexes = [];
+      _shuffledChoicesCache = {};
+      _cacheShuffledChoices();
     });
   }
 
@@ -327,8 +385,10 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reading Quiz'),
-        backgroundColor: const Color(0xFF8CC63F),
+        title: const Text('Reading Quiz',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF2F6B3F),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -336,7 +396,7 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
           children: [
             // Progress & Title
             Card(
-              color: Colors.green[50],
+              color: const Color(0xFFFFF6C0),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
               child: Padding(
@@ -344,24 +404,59 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Reading Quiz',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF8CC63F))),
+                    Row(
+                      children: [
+                        const Text('Reading Quiz',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2F6B3F))),
+                        if (_isRetryMode) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF7C85C),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Text('RETRY',
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF2F6B3F))),
+                          ),
+                        ],
+                      ],
+                    ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Answer multiple choice by tapping the correct translation. This quiz has 4 word questions + 1 phrase question (randomized).',
-                      style: TextStyle(fontSize: 14),
+                    Text(
+                      _isRetryMode
+                          ? 'Retrying ${_questions.length} incorrect question(s). Correct answers will be added to your score.'
+                          : 'Answer multiple choice by tapping the correct translation. This quiz has 4 word questions + 1 phrase question (randomized).',
+                      style: const TextStyle(fontSize: 14),
                     ),
                     const SizedBox(height: 12),
                     Row(
                       children: [
                         Expanded(
-                          child: LinearProgressIndicator(value: progress),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: LinearProgressIndicator(
+                              value: progress,
+                              backgroundColor:
+                                  const Color(0xFF7FB77E).withOpacity(0.3),
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                  Color(0xFF2F6B3F)),
+                              minHeight: 8,
+                            ),
+                          ),
                         ),
                         const SizedBox(width: 12),
-                        Text('${_current + 1} / $total'),
+                        Text('${_current + 1} / $total',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2F6B3F))),
                       ],
                     ),
                   ],
@@ -374,7 +469,10 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
             Card(
               color: Colors.white,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(16),
+                  side: BorderSide(
+                      color: const Color(0xFFF7C85C).withOpacity(0.5),
+                      width: 1.5)),
               elevation: 3,
               child: Padding(
                 padding:
@@ -387,11 +485,11 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
                       style: const TextStyle(
                         fontFamily: 'Baybayin',
                         fontSize: 36,
-                        color: Colors.black,
+                        color: Color(0xFF2F6B3F),
                       ),
                     ),
                     const SizedBox(height: 18),
-                    ..._buildChoiceButtons(_questions[_current]),
+                    ..._buildChoiceButtons(_current),
                   ],
                 ),
               ),
@@ -409,7 +507,7 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
                     label: const Text('New Quiz',
                         style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF8CC63F),
+                      backgroundColor: const Color(0xFF2F6B3F),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),
@@ -424,7 +522,7 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
                     label: const Text('Back',
                         style: TextStyle(color: Colors.white)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF8CC63F),
+                      backgroundColor: const Color(0xFF2F6B3F),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12)),
@@ -439,13 +537,33 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Score: $_score',
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
-                const SizedBox(width: 12),
-                if (!_allowScoring)
-                  const Text('(Retry mode — score not counted)',
-                      style: TextStyle(fontSize: 12, color: Colors.red)),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF6C0),
+                    borderRadius: BorderRadius.circular(20),
+                    border:
+                        Border.all(color: const Color(0xFFF7C85C), width: 1.5),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.star_rounded,
+                          color: Color(0xFFF7C85C), size: 20),
+                      const SizedBox(width: 6),
+                      Text(
+                        _isRetryMode
+                            ? 'Score: ${_originalScore + _score} (retry mode)'
+                            : 'Score: $_score',
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2F6B3F)),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ],
@@ -454,15 +572,11 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
     );
   }
 
-  List<Widget> _buildChoiceButtons(_Question q) {
-    final shuffled = List<String>.from(q.choices);
-    if (!shuffled
-        .any((c) => c.trim().toLowerCase() == q.correct.trim().toLowerCase())) {
-      shuffled.add(q.correct);
-    }
-    shuffled.shuffle(Random());
+  List<Widget> _buildChoiceButtons(int questionIndex) {
+    // Use cached shuffled choices to avoid reshuffling on rebuild
+    final choices = _shuffledChoicesCache[questionIndex] ?? [];
 
-    return shuffled
+    return choices
         .map((choice) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
               child: SizedBox(
@@ -470,8 +584,8 @@ class _QuizReadingPageState extends State<QuizReadingPage> {
                 child: ElevatedButton(
                   onPressed: () => _onSelectAnswer(choice),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[100],
-                    foregroundColor: Colors.black87,
+                    backgroundColor: const Color(0xFFFFF6C0),
+                    foregroundColor: const Color(0xFF2F6B3F),
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
@@ -510,7 +624,7 @@ class _FeedbackDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(correct ? 'Correct!' : 'Not quite'),
+      title: Text(correct ? 'Correct! ✅' : 'Not quite ❌'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

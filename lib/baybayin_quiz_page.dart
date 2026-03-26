@@ -11,7 +11,7 @@ class BaybayinQuizPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF8CC63F),
+        backgroundColor: const Color(0xFF2F6B3F),
         title: const Text(
           "Baybayin Quiz",
           style: TextStyle(color: Colors.white),
@@ -96,7 +96,7 @@ class BaybayinQuizPage extends StatelessWidget {
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF8CC63F),
+              color: Color(0xFF2F6B3F),
             ),
           ),
           const SizedBox(height: 10),
@@ -110,7 +110,7 @@ class BaybayinQuizPage extends StatelessWidget {
             child: ElevatedButton(
               onPressed: onStart,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF8CC63F),
+                backgroundColor: const Color(0xFF2F6B3F),
                 foregroundColor: Colors.white,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 14),

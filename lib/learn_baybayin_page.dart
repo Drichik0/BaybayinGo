@@ -4,7 +4,7 @@ import 'consonants_vowel_change_page.dart';
 import 'consonants_vowel_cancellation_page.dart';
 import 'basic_filipino_words_page.dart';
 import 'basic_foreign_words_page.dart';
-import 'punctuation_page.dart'; // Added Punctuation Page
+import 'punctuation_page.dart';
 
 class LearnBaybayinPage extends StatelessWidget {
   const LearnBaybayinPage({super.key});
@@ -13,8 +13,10 @@ class LearnBaybayinPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Learn Baybayin'),
-        backgroundColor: const Color(0xFF8CC63F),
+        title: const Text('Learn Baybayin',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF2F6B3F),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
@@ -22,52 +24,130 @@ class LearnBaybayinPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Section: Baybayin Chart
-            const Text(
-              'Baybayin Chart',
-              style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF8CC63F)),
-            ),
-            const SizedBox(height: 20),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF6C0),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF2F6B3F).withOpacity(0.15),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+                border: Border.all(
+                  color: const Color(0xFFF7C85C),
+                  width: 2,
+                ),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF7FB77E).withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(Icons.grid_view_rounded,
+                            color: Color(0xFF2F6B3F), size: 24),
+                      ),
+                      const SizedBox(width: 10),
+                      const Text(
+                        'Baybayin Chart',
+                        style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF2F6B3F)),
+                      ),
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    child: Divider(color: Color(0xFFF7C85C), thickness: 2),
+                  ),
 
-            // Vowel Row
-            _buildVowelRow(),
+                  // Vowel Row
+                  _buildVowelRow(),
+                  const SizedBox(height: 24),
+
+                  // Default Consonants
+                  _buildDefaultConsonantRows(),
+                ],
+              ),
+            ),
             const SizedBox(height: 30),
 
-            // Default Consonants (all "a" sounds)
-            _buildDefaultConsonantRows(),
-            const SizedBox(height: 30),
-
-            // Example for Sound Change (using ba)
-            const Text(
-              'Example: Sound Changes (ba)',
-              style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF8CC63F)),
+            // Example for Sound Change
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF6C0),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF2F6B3F).withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    'Example: Sound Changes (ba)',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2F6B3F)),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildSoundChangeExample(
+                    ['b', 'be', 'bo', 'b+'],
+                    ['ba', 'be/bi', 'bo/bu', 'b'],
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 10),
-            _buildSoundChangeExample(
-              ['b', 'be', 'bo', 'b+'], // Baybayin TTF input
-              ['ba', 'be/bi', 'bo/bu', 'b'], // Latin alphabet display
+
+            const SizedBox(height: 36),
+
+            // Rules Section Header
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF7C85C).withOpacity(0.4),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.auto_stories_rounded,
+                      color: Color(0xFF2F6B3F), size: 24),
+                ),
+                const SizedBox(width: 10),
+                const Text(
+                  'Rules',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF2F6B3F)),
+                ),
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.only(top: 6, bottom: 16),
+              child: Divider(color: Color(0xFFF7C85C), thickness: 2),
             ),
 
-            const SizedBox(height: 40),
-
-            // Rules Section
-            const Text(
-              'Rules',
-              style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF8CC63F)),
-            ),
-            const SizedBox(height: 20),
-
-            // Rules as small cards
+            // Rules as cards
             _buildRuleCard(
               'Basic Vowels',
+              Icons.text_fields_rounded,
               () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -76,6 +156,7 @@ class LearnBaybayinPage extends StatelessWidget {
             ),
             _buildRuleCard(
               'Basic Consonants w/ Vowel Changes',
+              Icons.swap_horiz_rounded,
               () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -84,6 +165,7 @@ class LearnBaybayinPage extends StatelessWidget {
             ),
             _buildRuleCard(
               'Basic Consonants w/ Vowel Cancellation',
+              Icons.cancel_rounded,
               () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -93,6 +175,7 @@ class LearnBaybayinPage extends StatelessWidget {
             ),
             _buildRuleCard(
               'Basic Filipino Words',
+              Icons.translate_rounded,
               () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -101,6 +184,7 @@ class LearnBaybayinPage extends StatelessWidget {
             ),
             _buildRuleCard(
               'Basic Foreign Words',
+              Icons.language_rounded,
               () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -109,6 +193,7 @@ class LearnBaybayinPage extends StatelessWidget {
             ),
             _buildRuleCard(
               'Punctuation',
+              Icons.more_horiz_rounded,
               () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -118,15 +203,13 @@ class LearnBaybayinPage extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            // -----------------------------
-            // Back Button (larger)
-            // -----------------------------
+            // Back Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF8CC63F),
+                  backgroundColor: const Color(0xFF2F6B3F),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -144,34 +227,61 @@ class LearnBaybayinPage extends StatelessWidget {
     );
   }
 
-  // Small card for each rule button
-  Widget _buildRuleCard(String title, VoidCallback onTap) {
+  // Rule card with icon
+  Widget _buildRuleCard(String title, IconData icon, VoidCallback onTap) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Card(
-          color: Colors.green[100],
-          elevation: 2,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF6C0),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF2F6B3F).withOpacity(0.08),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
+              ),
+            ],
+            border: Border.all(
+              color: const Color(0xFF7FB77E).withOpacity(0.4),
+              width: 1.5,
+            ),
+          ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             child: Row(
               children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF7FB77E).withOpacity(0.25),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, color: const Color(0xFF2F6B3F), size: 22),
+                ),
+                const SizedBox(width: 14),
                 Expanded(
                   child: Text(
                     title,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: Color(0xFF2F6B3F),
                     ),
                   ),
                 ),
-                const Icon(Icons.arrow_forward_ios,
-                    size: 16, color: Colors.black54)
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF7C85C).withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.arrow_forward_ios,
+                      size: 14, color: Color(0xFF2F6B3F)),
+                ),
               ],
             ),
           ),
@@ -192,8 +302,10 @@ class LearnBaybayinPage extends StatelessWidget {
           children: vowelsBaybayin
               .map((v) => Text(
                     v,
-                    style:
-                        const TextStyle(fontFamily: 'Baybayin', fontSize: 36),
+                    style: const TextStyle(
+                        fontFamily: 'Baybayin',
+                        fontSize: 36,
+                        color: Color(0xFF2F6B3F)),
                   ))
               .toList(),
         ),
@@ -203,7 +315,8 @@ class LearnBaybayinPage extends StatelessWidget {
           children: vowelsLatin
               .map((v) => Text(
                     v,
-                    style: const TextStyle(fontSize: 24),
+                    style: const TextStyle(
+                        fontSize: 20, color: Color(0xFF7FB77E)),
                   ))
               .toList(),
         ),
@@ -211,39 +324,14 @@ class LearnBaybayinPage extends StatelessWidget {
     );
   }
 
-  // Default consonants rows ("a" sound)
+  // Default consonants rows
   Widget _buildDefaultConsonantRows() {
     const consonantsBaybayin = [
-      'b',
-      'k',
-      'd',
-      'g',
-      'h',
-      'l',
-      'm',
-      'n',
-      'N',
-      'p',
-      's',
-      't',
-      'w',
-      'y'
+      'b', 'k', 'd', 'g', 'h', 'l', 'm', 'n', 'N', 'p', 's', 't', 'w', 'y'
     ];
     const consonantsLatin = [
-      'ba',
-      'ka',
-      'da/ra',
-      'ga',
-      'ha',
-      'la',
-      'ma',
-      'na',
-      'nga',
-      'pa',
-      'sa',
-      'ta',
-      'wa',
-      'ya'
+      'ba', 'ka', 'da/ra', 'ga', 'ha', 'la', 'ma', 'na', 'nga', 'pa', 'sa',
+      'ta', 'wa', 'ya'
     ];
 
     List<Widget> rows = [];
@@ -267,8 +355,10 @@ class LearnBaybayinPage extends StatelessWidget {
           children: baybayinInput
               .map((char) => Text(
                     char,
-                    style:
-                        const TextStyle(fontFamily: 'Baybayin', fontSize: 36),
+                    style: const TextStyle(
+                        fontFamily: 'Baybayin',
+                        fontSize: 36,
+                        color: Color(0xFF2F6B3F)),
                   ))
               .toList(),
         ),
@@ -278,7 +368,8 @@ class LearnBaybayinPage extends StatelessWidget {
           children: latinDisplay
               .map((char) => Text(
                     char,
-                    style: const TextStyle(fontSize: 20),
+                    style: const TextStyle(
+                        fontSize: 18, color: Color(0xFF7FB77E)),
                   ))
               .toList(),
         ),
@@ -296,8 +387,10 @@ class LearnBaybayinPage extends StatelessWidget {
           children: baybayinInput
               .map((char) => Text(
                     char,
-                    style:
-                        const TextStyle(fontFamily: 'Baybayin', fontSize: 36),
+                    style: const TextStyle(
+                        fontFamily: 'Baybayin',
+                        fontSize: 36,
+                        color: Color(0xFF2F6B3F)),
                   ))
               .toList(),
         ),
@@ -307,7 +400,8 @@ class LearnBaybayinPage extends StatelessWidget {
           children: latinDisplay
               .map((char) => Text(
                     char,
-                    style: const TextStyle(fontSize: 20),
+                    style: const TextStyle(
+                        fontSize: 18, color: Color(0xFF7FB77E)),
                   ))
               .toList(),
         ),

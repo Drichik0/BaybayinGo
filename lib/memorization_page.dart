@@ -137,7 +137,7 @@ class _MemorizationFlashcardsPageState
   Widget build(BuildContext context) {
     if (currentIndex >= _items.length) {
       return Scaffold(
-        appBar: AppBar(backgroundColor: const Color(0xFF8CC63F)),
+        appBar: AppBar(backgroundColor: const Color(0xFF2F6B3F)),
         body: const Center(child: Text("Loading...")),
       );
     }
@@ -146,7 +146,7 @@ class _MemorizationFlashcardsPageState
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF8CC63F),
+        backgroundColor: const Color(0xFF2F6B3F),
         title: const Text("Memorization Flashcards",
             style: TextStyle(color: Colors.white)),
         centerTitle: true,
