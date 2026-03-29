@@ -39950,7 +39950,7 @@ case 2:if(!b)A.an6().$1("Could not launch "+q.k(0))
 return A.P(null,r)}})
 return A.Q($async$vo,r)},
 K(a){var s=this,r=null
-return A.dE(A.dN(B.e,r,B.au,B.VV),r,A.es(A.aF(A.b([A.aS(r,B.We,B.o,r,new A.aB(B.e,r,r,A.ac(16),r,r,B.v),r,r,r,B.bt,r,r,1/0),B.cI,s.qn(a,"App Description",new A.Vo(a)),B.ao,s.qn(a,"Project Info & Originality",new A.Vp(a)),B.ao,s.qn(a,"Tools & Frameworks Used",new A.Vq(a)),B.ao,s.qn(a,"Acknowledgements",new A.Vr(a)),B.ao,s.qn(a,"Developer",new A.Vs(a)),B.cI,B.aT,B.R,A.dg(A.ZL(B.Ga,B.Wj,s.ga71(),A.dm(r,r,B.u,r,r,r,2,r,r,r,r,r,r,B.bU,r,new A.bd(A.ac(16),B.r),r,r,r,r,r)),r,1/0),B.R,A.dg(A.ZL(B.G8,B.VT,new A.Vt(a),A.dm(r,r,B.e,r,r,r,2,r,r,r,r,r,r,B.bU,r,new A.bd(A.ac(16),B.r),r,r,r,r,r)),r,1/0)],t.p),B.p,r,B.n,B.m),B.a8))},
+return A.dE(A.dN(B.e,r,B.au,B.VV),r,A.es(A.aF(A.b([A.aS(r,B.We,B.o,r,new A.aB(B.e,r,r,A.ac(16),r,r,B.v),r,r,r,B.bt,r,r,1/0),B.cI,s.qn(a,"App Description",new A.Vo(a)),B.ao,s.qn(a,"Project Info & Originality",new A.Vp(a)),B.ao,s.qn(a,"Tools & Frameworks Used",new A.Vq(a)),B.ao,s.qn(a,"Acknowledgements",new A.Vr(a)),B.ao,s.qn(a,"Developer",new A.Vs(a)),B.cI,B.aT,B.R,A.dg(A.ZL(B.Ga,B.Wj,s.ga71(),A.dm(r,r,B.e,r,r,r,2,r,r,r,r,r,r,B.bU,r,new A.bd(A.ac(16),B.r),r,r,r,r,r)),r,1/0),B.R,A.dg(A.ZL(B.G8,B.VT,new A.Vt(a),A.dm(r,r,B.e,r,r,r,2,r,r,r,r,r,r,B.bU,r,new A.bd(A.ac(16),B.r),r,r,r,r,r)),r,1/0)],t.p),B.p,r,B.n,B.m),B.a8))},
 qn(a,b,c){var s=null,r=A.dm(B.j_,s,B.P,s,s,s,2,s,s,s,B.e,s,s,B.a8,s,new A.bd(A.ac(16),B.B8),s,s,s,s,s)
 return A.dg(A.em(A.bq(A.b([A.da(A.ax(b,s,s,s,B.zH,s,s),1),B.Gh],t.p),B.p,B.f8,B.m,0),c,r),s,1/0)}}
 A.Vo.prototype={
