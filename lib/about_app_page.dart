@@ -99,7 +99,7 @@ class AboutAppPage extends StatelessWidget {
                 label: const Text("Submit Feedback",
                     style: TextStyle(fontSize: 18, color: Colors.white)),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF7FB77E),
+                  backgroundColor: const Color(0xFF2F6B3F),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
