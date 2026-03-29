@@ -20,26 +20,6 @@ class BaybayinApp extends StatelessWidget {
         primaryColor: const Color(0xFF2F6B3F),
         scaffoldBackgroundColor: Colors.white,
       ),
-      builder: (context, child) {
-        return Container(
-          color: const Color(0xFFE5E5E5), // Soft grey background for web desktop view
-          child: Center(
-            child: Container(
-              constraints: const BoxConstraints(maxWidth: 600),
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 12,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: child ?? const SizedBox.shrink(),
-            ),
-          ),
-        );
-      },
       home: const HomePage(),
     );
   }
@@ -65,82 +45,87 @@ class HomePage extends StatelessWidget {
           ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/BGoLogo.png',
-              width: 120,
-              height: 120,
-            ),
-            const SizedBox(height: 30),
-            const Text(
-              'BaybayinGo!',
-              style: TextStyle(
-                fontSize: 32,
-                color: Color(0xFF2F6B3F),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            RichText(
-              text: const TextSpan(
-                style: TextStyle(
-                  fontSize: 44,
-                  color: Color(0xFF2F6B3F),
-                ),
-                children: [
-                  TextSpan(
-                    text: 'By+byin+Go',
-                    style: TextStyle(fontFamily: 'Baybayin'),
-                  ),
-                  TextSpan(
-                    text: '!',
-                    style: TextStyle(fontFamily: 'Roboto'),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 50),
-            Column(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildButton(context, 'What is Baybayin', () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const WhatIsBaybayinPage()),
-                  );
-                }),
-                const SizedBox(height: 20),
+                Image.asset(
+                  'assets/images/BGoLogo.png',
+                  width: 120,
+                  height: 120,
+                ),
+                const SizedBox(height: 30),
+                const Text(
+                  'BaybayinGo!',
+                  style: TextStyle(
+                    fontSize: 32,
+                    color: Color(0xFF2F6B3F),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                RichText(
+                  text: const TextSpan(
+                    style: TextStyle(
+                      fontSize: 44,
+                      color: Color(0xFF2F6B3F),
+                    ),
+                    children: [
+                      TextSpan(
+                        text: 'By+byin+Go',
+                        style: TextStyle(fontFamily: 'Baybayin'),
+                      ),
+                      TextSpan(
+                        text: '!',
+                        style: TextStyle(fontFamily: 'Roboto'),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 50),
+                Column(
+                  children: [
+                    _buildButton(context, 'What is Baybayin', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const WhatIsBaybayinPage()),
+                      );
+                    }),
+                    const SizedBox(height: 20),
 
-                _buildButton(context, 'Learn Baybayin', () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LearnBaybayinPage()),
-                  );
-                }),
-                const SizedBox(height: 20),
+                    _buildButton(context, 'Learn Baybayin', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LearnBaybayinPage()),
+                      );
+                    }),
+                    const SizedBox(height: 20),
 
-                _buildButton(context, 'Baybayin Quiz', () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const BaybayinQuizPage()),
-                  );
-                }),
-                const SizedBox(height: 20),
+                    _buildButton(context, 'Baybayin Quiz', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const BaybayinQuizPage()),
+                      );
+                    }),
+                    const SizedBox(height: 20),
 
-                _buildButton(context, 'About App', () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const AboutAppPage()),
-                  );
-                }),
+                    _buildButton(context, 'About App', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const AboutAppPage()),
+                      );
+                    }),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ),
       ),
 
