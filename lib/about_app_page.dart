@@ -5,6 +5,7 @@ import 'about_app_project_info_page.dart';
 import 'about_app_tools_page.dart';
 import 'about_app_acknowledgements_page.dart';
 import 'about_app_developer_page.dart';
+import 'about_app_support_page.dart';
 
 class AboutAppPage extends StatelessWidget {
   const AboutAppPage({super.key});
@@ -110,17 +111,28 @@ class AboutAppPage extends StatelessWidget {
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AboutAppSupportPage()),
+                  );
+                },
+                icon: const Icon(Icons.favorite, color: Colors.white),
+                label: const Text(
+                  "Make Donation / Support Developer",
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2F6B3F),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  elevation: 2,
                 ),
-                child: const Text("Back",
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ),
           ],
