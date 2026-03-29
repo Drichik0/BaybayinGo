@@ -20,6 +20,26 @@ class BaybayinApp extends StatelessWidget {
         primaryColor: const Color(0xFF2F6B3F),
         scaffoldBackgroundColor: Colors.white,
       ),
+      builder: (context, child) {
+        return Container(
+          color: const Color(0xFFE5E5E5), // Soft grey background for web desktop view
+          child: Center(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 600),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 12,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: child ?? const SizedBox.shrink(),
+            ),
+          ),
+        );
+      },
       home: const HomePage(),
     );
   }
